@@ -23,8 +23,8 @@ class CerealStorageImpl(
     }
 
 
-
     private val storage = mutableMapOf<Cereal, Float>()
+
     /**
      * Добавляет крупу к существующему контейнеру соответствующего типа, либо добавляет новый контейнер
      * если его ещё не было в хранилище и добавляет в него предоставленную крупу.
@@ -41,13 +41,13 @@ class CerealStorageImpl(
         var tmp = -0.1f
         if (!storage.contains(cereal)) {
             // Проверяю можно ли добавить еще один контейнер
-           // check(storageCapacity - (if(storage.isEmpty()) 1.toFloat() else storage.size.toFloat())* containerCapacity >= containerCapacity) {
+            // check(storageCapacity - (if(storage.isEmpty()) 1.toFloat() else storage.size.toFloat())* containerCapacity >= containerCapacity) {
             //    "Хранилище не позволяет разместить ещё один контейнер для новой крупы. В хранилище нет места для размещения контейнера"
-           // }
+            // }
             check(storageCapacity - storage.size.toFloat() * containerCapacity >= containerCapacity) {
                 "Хранилище не позволяет разместить ещё один контейнер для новой крупы. В хранилище нет места для размещения контейнера"
             }
-            val dif = containerCapacity - amount
+            //
             storage[cereal] = min(containerCapacity, amount)
             tmp = amount - getAmount(cereal)
             /* tmp = if ((dif) < 0 ) {
@@ -58,13 +58,14 @@ class CerealStorageImpl(
                 0.0f
             }
             */
-        } else{
+        } else {
             val dif = min(getSpace(cereal), amount) // е 5 х 15
             storage[cereal] = getAmount(cereal) + dif
             tmp = amount - dif
+           // println("Остаток при кейсе, когда уже есть контейнер $tmp")
         }
         //println(tmp)
-        check(tmp >= 0.0f){"Что-то не так написал в методе"}
+        check(tmp >= 0.0f) { "Что-то не так написал в методе" }
         return tmp
     }
 
@@ -125,6 +126,9 @@ class CerealStorageImpl(
         return containerCapacity - getAmount(cereal)
     }
 
+    fun getStorageSize(): Int {
+        return storage.size
+    }
 
     /**
      * @return текстовое представление
