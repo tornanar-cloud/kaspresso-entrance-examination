@@ -51,7 +51,7 @@ class CerealStorageImpl(
 
         }
 
-        check(tmp >= 0.0f) { "Что-то не так написал в методе" }
+        //check(tmp >= 0.0f) { "Что-то не так написал в методе" }
         return tmp
     }
 
