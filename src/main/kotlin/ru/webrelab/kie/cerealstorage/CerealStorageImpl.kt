@@ -37,34 +37,20 @@ class CerealStorageImpl(
      */
     override fun addCereal(cereal: Cereal, amount: Float): Float {
         require(amount >= 0f) { "Значение не может быть отрицательным" }
-        //  Рассматриваю кейс, когда контейнера с крупой нет + проверяю - могу ли я добавить контейнер с крупой
         var tmp = -0.1f
         if (!storage.contains(cereal)) {
-            // Проверяю можно ли добавить еще один контейнер
-            // check(storageCapacity - (if(storage.isEmpty()) 1.toFloat() else storage.size.toFloat())* containerCapacity >= containerCapacity) {
-            //    "Хранилище не позволяет разместить ещё один контейнер для новой крупы. В хранилище нет места для размещения контейнера"
-            // }
             check(storageCapacity - storage.size.toFloat() * containerCapacity >= containerCapacity) {
                 "Хранилище не позволяет разместить ещё один контейнер для новой крупы. В хранилище нет места для размещения контейнера"
             }
-            //
             storage[cereal] = min(containerCapacity, amount)
             tmp = amount - getAmount(cereal)
-            /* tmp = if ((dif) < 0 ) {
-                //storage[cereal] = containerCapacity
-                abs(dif)
-            } else {
-                //storage[cereal] = amount
-                0.0f
-            }
-            */
         } else {
             val dif = min(getSpace(cereal), amount) // е 5 х 15
             storage[cereal] = getAmount(cereal) + dif
             tmp = amount - dif
-           // println("Остаток при кейсе, когда уже есть контейнер $tmp")
+
         }
-        //println(tmp)
+
         check(tmp >= 0.0f) { "Что-то не так написал в методе" }
         return tmp
     }
@@ -81,14 +67,6 @@ class CerealStorageImpl(
         require(storage.contains(cereal)) { "Такого контейнера с крупой нет в хранилище" }
         require(amount >= 0.0f) { "Количество не может быть отрицательным" }
         val currentAmount = getAmount(cereal)
-        /*if (currentAmount >= amount) {
-            storage[cereal] = currentAmount - amount
-            return amount
-        } else {
-            storage[cereal] = 0.0f
-            return currentAmountэ
-        }
-        */
         val tmp = min(currentAmount, amount)
         storage[cereal] = currentAmount - tmp
         return tmp
@@ -121,8 +99,6 @@ class CerealStorageImpl(
      */
     override fun getSpace(cereal: Cereal): Float {
         check(storage.contains(cereal)) { "Проверяемого контейнера нет" }
-        //return containerCapacity - storage.getOrElse(cereal){ throw IllegalStateException("проверяемого контейнера нет")}
-        //return containerCapacity - (storage[cereal] ?: throw IllegalStateException("проверяемого контейнера нет"))
         return containerCapacity - getAmount(cereal)
     }
 
